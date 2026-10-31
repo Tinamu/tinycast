@@ -318,7 +318,9 @@ struct RootPaletteView: View {
                     if isCollapsed {
                         Color.clear
                     } else {
-                        screen.body(selection: sel, scroll: scroll)
+                        PaletteListBody(content: screen.body(selection: sel, scroll: scroll)) {
+                            vm.listPageRows = $0
+                        }
                     }
                 }
                 .safeAreaInset(edge: .top, spacing: 0) { header }
@@ -338,6 +340,7 @@ struct RootPaletteView: View {
                     WindowReader {
                         hostWindow = $0
                         installHeaderArrowHandler(in: $0)
+                        installPageStepHandler(in: $0)
                     }
                 )
                 // The window's frame is the size source, so the glass and clip stay matched.
@@ -493,7 +496,7 @@ struct RootPaletteView: View {
             .onChange(of: vm.menuQuery) { menuQueryChanged() }
             .onDisappear {
                 menuPanel.hide()
-                (hostWindow as? PalettePanel)?.onHeaderFieldBoundaryArrow = nil
+                releasePanelHandlers()
             }
             // The first show builds this view after `prepare`, so no handler saw that reset.
             .onAppear {
@@ -1364,6 +1367,44 @@ struct RootPaletteView: View {
         return .handled
     }
 
+    /// One ↑/↓ step: the screen's own where it has one, else the flat index, nil at the end.
+    private func verticalStep(
+        _ delta: Int, from index: Int, in screen: any PaletteScreen, count: Int
+    ) -> Int? {
+        if let next = screen.move(delta, axis: .vertical, from: index) { return next }
+        let next = index + delta
+        return (0..<count).contains(next) ? next : nil
+    }
+
+    /// ⇞/⇟: a measured band of rows, stepped one at a time, so a grid pages by cell rows.
+    private func movePage(_ direction: Int) -> Bool {
+        let screen = screen
+        let count = screen.rows.count
+        let current = selection(in: screen)
+        guard count > 0, !screen.ownsVerticalKeys(at: current) else { return false }
+        if argumentFocused != nil { returnFocusToSearchField() }
+        let next = ListPaging.destination(
+            from: current, rows: vm.listPageRows ?? ListPaging.unmeasuredRows
+        ) { verticalStep(direction, from: $0, in: screen, count: count) }
+        guard next != current else { return true }
+        vm.selection = next
+        scroll = ScrollIntent(kind: .follow)
+        return true
+    }
+
+    /// ↖/↘: the list's own ends, which no screen's step needs to resolve.
+    private func jumpToListEdge(_ direction: Int) -> Bool {
+        let screen = screen
+        let count = screen.rows.count
+        let current = selection(in: screen)
+        guard count > 0, !screen.ownsVerticalKeys(at: current) else { return false }
+        if argumentFocused != nil { returnFocusToSearchField() }
+        guard current != (direction > 0 ? count - 1 : 0) else { return true }
+        vm.selection = direction > 0 ? count - 1 : 0
+        scroll = ScrollIntent(kind: .follow)
+        return true
+    }
+
     /// ←/→: consumed only by a horizontally navigating screen, else the caret keeps them.
     private func moveHorizontally(_ delta: Int) -> Bool {
         let screen = screen
@@ -1473,6 +1514,29 @@ struct RootPaletteView: View {
         }
     }
 
+    /// Both handlers capture this view, so the panel must not keep them past its root's teardown.
+    private func releasePanelHandlers() {
+        guard let panel = hostWindow as? PalettePanel else { return }
+        panel.onHeaderFieldBoundaryArrow = nil
+        panel.onListPageStep = nil
+    }
+
+    /// The field editor answers ⇞/⇟ and ↖/↘ itself, so the panel hands them to the list instead.
+    private func installPageStepHandler(in window: NSWindow?) {
+        guard let panel = window as? PalettePanel else { return }
+        panel.onListPageStep = { step in
+            guard !isCollapsed, !menuOpen, !vm.isControlListOpen, !vm.isComposing,
+                !vm.isEditingField, !vm.mode.isNativeEditor
+            else { return false }
+            switch step {
+            case .pageUp: return movePage(-1)
+            case .pageDown: return movePage(1)
+            case .start: return jumpToListEdge(-1)
+            case .end: return jumpToListEdge(1)
+            }
+        }
+    }
+
     /// AppKit selects the whole query as the field editor comes back, which is the wanted reset.
     private func returnFocusToSearchField() {
         argumentFocused = nil
@@ -1572,6 +1636,16 @@ private struct PaletteHideObserver: ViewModifier {
         content.onChange(of: vm.isVisible) { _, visible in
             if !visible { onHide() }
         }
+    }
+}
+
+/// Its own view, not a modifier on `body`: that chain is already at the type-checker's limit.
+private struct PaletteListBody: View {
+    let content: AnyView
+    let report: (Int?) -> Void
+
+    var body: some View {
+        content.onPreferenceChange(ListPageRowsKey.self) { report($0) }
     }
 }
 

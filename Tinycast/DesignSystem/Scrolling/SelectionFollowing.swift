@@ -22,6 +22,15 @@ extension View {
     }
 }
 
+/// The page ⇞/⇟ step by, measured; nil until a row is, which is when nothing is selected.
+struct ListPageRowsKey: PreferenceKey {
+    static var defaultValue: Int? { nil }
+
+    static func reduce(value: inout Int?, nextValue: () -> Int?) {
+        value = value ?? nextValue()
+    }
+}
+
 private struct SelectionFrameKey: PreferenceKey {
     static var defaultValue: CGRect? { nil }
 
@@ -53,8 +62,15 @@ private struct SelectionFollowing: ViewModifier {
         case middle
     }
 
+    /// Rows whole in the band, so a page lands where the next band of rows starts.
+    private var pageRows: Int? {
+        guard let height = selection?.height else { return nil }
+        return ListPaging.rows(band: band.height, rowHeight: height)
+    }
+
     func body(content: Content) -> some View {
         content
+            .preference(key: ListPageRowsKey.self, value: pageRows)
             .onScrollGeometryChange(for: Band.self) {
                 Band(insetTop: $0.contentInsets.top, height: $0.containerSize.height)
             } action: { old, new in
