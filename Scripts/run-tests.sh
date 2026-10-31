@@ -293,6 +293,8 @@ run form-input-test        Tinycast/Platform/Appearance.swift \
                            Tinycast/DesignSystem/FormTextInput.swift \
                            Tinycast/DesignSystem/FormTextArea.swift
 run scroll-reveal-test     Tinycast/DesignSystem/Scrolling/SelectionReveal.swift
+run list-paging-test       Tinycast/DesignSystem/Scrolling/ListPaging.swift \
+                           Tinycast/Features/Emoji/Model/EmojiGridGeometry.swift
 run redaction-test         Tinycast/DesignSystem/RedactedPlaceholder.swift
 run keyboard-focus-test    Tinycast/DesignSystem/Interaction/KeyboardFocus.swift
 run command-escape-tap-test Tinycast/Palette/CommandEscapeTap.swift

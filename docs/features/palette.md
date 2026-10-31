@@ -597,6 +597,8 @@ Most ⌘/⌃ chords reach SwiftUI's `onKeyPress` fine. Several kinds do not. All
 handled in `PalettePanel.sendEvent` before `super` hands the event to the responder chain:
 
 - **A bare backspace** — the field editor consumes it as an edit (`onBareBackspace`).
+- **The page and document keys** — ⇞/⇟ and ↖/↘, which the field editor answers with a scroll or a
+  caret move of its own (`onListPageStep`, see below).
 - **Chords with no main menu item** — ⌘, and ⌘w, which an app with a menu bar would never see here.
 - **The physical number-row slots.** `FavoriteSlots` matches ⌘1…⌘0 by key code before fixed command
   chords, then publishes the resolved position to the active screen. Only the launcher and clipboard
@@ -625,6 +627,28 @@ handled in `PalettePanel.sendEvent` before `super` hands the event to the respon
 
 Adding a chord that "does nothing" is almost always one of these — check `sendEvent`, and then
 whether macOS has claimed the chord, before assuming the handler is wrong.
+
+## Paging the list
+
+⇞/⇟ move the selection by a band of rows and ↖/↘ to the list's ends. Like the Emacs chords, none of
+them reaches `onKeyPress`: a one-line field editor answers ⇞/⇟ with a scroll and ↖/↘ by walking the
+caret, so `PalettePanel.sendEvent` takes all four and hands them over through `onListPageStep`. The
+menu-open freeze is applied first, so a key press moves nothing while a palette menu is up.
+
+`movePage` repeats the screen's own ↑/↓ step rather than adding to the flat index, so the emoji and
+extension grids page by whole rows of cells while a list pages by rows, each through the same
+`screen.move(_:axis:from:)` an arrow key uses. A step that stands still is the end of the list, and
+the page stops on it. `jumpToListEdge` needs no step: row 0 and the last row are the list's own.
+
+The page is measured rather than assumed. `SelectionFollowing` already holds the band it keeps the
+selection inside and the selected row's frame, so it publishes `ListPaging.rows` as
+`ListPageRowsKey`, and `PaletteState.listPageRows` carries it to the handler — every list that
+follows its selection reports one. Before a row is measured the page is `ListPaging.unmeasuredRows`,
+which is one band of rows at the default interface size.
+
+Text keeps the keys wherever text is being edited: a native editor screen, a focused form field
+(`isEditingField`), an open control list, an IME composition — and the compact bar, which shows no
+list for them to move.
 
 ## Emacs navigation chords
 

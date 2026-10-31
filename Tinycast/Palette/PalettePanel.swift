@@ -8,6 +8,14 @@ final class PalettePanel: NSPanel, AnimatedPanel {
         case trailing
     }
 
+    /// What ⇞/⇟ and ↖/↘ ask of a list: a band of rows, or its far end.
+    enum ListPageStep {
+        case pageUp
+        case pageDown
+        case start
+        case end
+    }
+
     /// Bare backspace, which the field editor swallows before `onKeyPress` could see it.
     var onBareBackspace: (() -> Bool)?
     /// Escape, which a focused form field answers before `onKeyPress` could see it.
@@ -18,6 +26,8 @@ final class PalettePanel: NSPanel, AnimatedPanel {
     var onFieldEditorFocused: ((NSTextInputContext) -> Void)?
     /// Inline argument fields use arrows at their text boundaries to continue their focus ring.
     var onHeaderFieldBoundaryArrow: ((HeaderFieldBoundary) -> Bool)?
+    /// ⇞/⇟ and ↖/↘, which the field editor answers before `onKeyPress` could see them.
+    var onListPageStep: ((ListPageStep) -> Bool)?
     var onDismissMenu: (() -> Void)?
     private var dismissingMouseButton: Int?
     /// Arms hover from `sendEvent`, the one place both event streams pass through.
@@ -50,6 +60,20 @@ final class PalettePanel: NSPanel, AnimatedPanel {
         case kVK_LeftArrow where editor.selectedRange().location == 0: return .leading
         case kVK_RightArrow where editor.selectedRange().location == (editor.string as NSString).length:
             return .trailing
+        default: return nil
+        }
+    }
+
+    /// Nil unless the key is one of the four, bare: a chord on them belongs to the field editor.
+    private static func listPageStep(for event: NSEvent) -> ListPageStep? {
+        guard event.modifierFlags.isDisjoint(with: [.command, .option, .control, .shift]) else {
+            return nil
+        }
+        switch Int(event.keyCode) {
+        case kVK_PageUp: return .pageUp
+        case kVK_PageDown: return .pageDown
+        case kVK_Home: return .start
+        case kVK_End: return .end
         default: return nil
         }
     }
@@ -221,6 +245,11 @@ final class PalettePanel: NSPanel, AnimatedPanel {
         }
         if event.type == .keyDown, let boundary = headerFieldBoundary(for: event),
             onHeaderFieldBoundaryArrow?(boundary) == true
+        {
+            return
+        }
+        if event.type == .keyDown, let step = Self.listPageStep(for: event),
+            onListPageStep?(step) == true
         {
             return
         }

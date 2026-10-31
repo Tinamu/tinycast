@@ -70,6 +70,8 @@ final class PaletteState {
     @ObservationIgnored private var hoverAnchor: CGPoint = .zero
     /// A containment test, because hit-testing a rebuilding hierarchy misses the field.
     @ObservationIgnored var searchFieldFrame: CGRect = .zero
+    /// The rows ⇞/⇟ move by, as the open list measured them; nil until one reports a row.
+    @ObservationIgnored var listPageRows: Int?
     /// True while a palette menu is open. See docs/features/palette.md#menu-open-input-freeze.
     @ObservationIgnored var menuOpen = false { didSet { onMenuOpenChanged?(menuOpen) } }
     var menuQuery = ""
