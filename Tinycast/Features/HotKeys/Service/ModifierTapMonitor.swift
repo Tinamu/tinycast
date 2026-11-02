@@ -33,8 +33,8 @@ private func modifierTapEventTapCallback(
 @MainActor
 @Observable
 final class ModifierTapMonitor: HealthCheckable {
-    /// True while something is bound and the tap can't be created; the recorder surfaces it.
-    private(set) var needsAccessibility = false
+    /// True while something is bound and no live tap stands; the recorder surfaces it.
+    private(set) var needsPermission = false
 
     /// Fired on the tap's final release, so the key is up by the time the action runs.
     @ObservationIgnored var onTrigger: ((HotKeyBinding) -> Void)?
@@ -245,11 +245,19 @@ final class ModifierTapMonitor: HealthCheckable {
         guard !bound.isEmpty, sessionActive else {
             tearDownTap()
             healthTicker?.unsubscribe(self)
-            needsAccessibility = false
+            refreshGrant()
             return
         }
         healthTicker?.subscribe(self)
         installTapIfNeeded()
+        refreshGrant()
+    }
+
+    /// The tap's own state is the only honest answer: a granted-looking pane still refuses taps.
+    private func refreshGrant() {
+        needsPermission = ModifierTapGrant.isMissing(
+            isBound: !bound.isEmpty, isSessionActive: sessionActive,
+            isTapEnabled: tapPort.map { CGEvent.tapIsEnabled(tap: $0) })
     }
 
     private func installTapIfNeeded() {
@@ -270,12 +278,11 @@ final class ModifierTapMonitor: HealthCheckable {
                 callback: modifierTapEventTapCallback,
                 userInfo: Unmanaged.passUnretained(self).toOpaque())
         else {
-            // Even a listen-only tap needs Accessibility; the health timer retries until granted.
+            // A grant is missing; the health timer retries until one arrives.
             if !loggedTapFailure {
                 NSLog("Tinycast: Failed to create modifier event tap")
                 loggedTapFailure = true
             }
-            needsAccessibility = true
             return
         }
         loggedTapFailure = false
@@ -284,7 +291,6 @@ final class ModifierTapMonitor: HealthCheckable {
         runLoopSource = source
         CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
         CGEvent.tapEnable(tap: port, enable: true)
-        needsAccessibility = false
     }
 
     private func tearDownTap() {
@@ -304,6 +310,7 @@ final class ModifierTapMonitor: HealthCheckable {
     fileprivate func tapWasDisabled() {
         resetDetectors()
         if let tapPort { CGEvent.tapEnable(tap: tapPort, enable: true) }
+        refreshGrant()
     }
 
     /// One-second watchdog while something is bound. See docs/features/hotkeys.md#lifecycle.
@@ -313,10 +320,10 @@ final class ModifierTapMonitor: HealthCheckable {
             installTapIfNeeded()
         } else if !Permissions.isAccessibilityTrusted() {
             tearDownTap()
-            needsAccessibility = true
         } else if let tapPort, !CGEvent.tapIsEnabled(tap: tapPort) {
             resetDetectors()
             CGEvent.tapEnable(tap: tapPort, enable: true)
         }
+        refreshGrant()
     }
 }

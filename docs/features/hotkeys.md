@@ -168,15 +168,22 @@ action runs, so the palette never opens with a phantom ⌘ held and focus restor
 and "double-tap and hold" is a deliberate non-event.
 
 `ModifierTapMonitor` is the one platform file. It is a **listen-only** `CGEventTap` and it installs only
-while a modifier-only shortcut is bound, so users who never use the feature pay nothing. Two
+while a modifier-only shortcut is bound, so users who never use the feature pay nothing. Three
 details are load-bearing:
 
 - It is `.tailAppendEventTap`, unlike the two head-inserted taps, so it observes events **after**
   `HyperKeyTap`'s rewrite. A Hyper-remapped right-side modifier therefore arrives as the full ⌃⌥⇧⌘
   chord and correctly reads as "not a lone modifier" — the left-side twin still double-taps.
-- Like every keyboard tap it needs the **Accessibility** grant, and it never prompts for it. The
-  binding records regardless; the recorder shows an inline warning that opens System Settings, and the
-  one-second health timer installs the tap the moment the grant lands.
+- It needs the **Accessibility** grant, the one [snippets](snippets.md) documents for its own
+  listen-only tap. On macOS 26.6 that was observed not to be enough: with Accessibility granted and
+  `AXIsProcessTrusted` answering yes, the tap was created and then refused enabling, and only the
+  **Input Monitoring** grant brought it up. The warning therefore names both and opens that pane.
+  Neither is ever prompted for here, so the binding records regardless, and the one-second health
+  timer brings the tap up the moment a grant lands.
+- **The grant is read from the tap, never from a pane.** `ModifierTapGrant` answers from the tap's
+  own state, because one macOS refuses to *enable* is created successfully and then delivers
+  nothing. Checking creation alone reports health while every modifier shortcut is silently dead:
+  no warning, no log line, and a watchdog re-enabling a tap that never takes.
 
 ⇧ is bindable this way even though `KeyShortcut` rejects a bare ⇧ combo: a double-_tap_ is unambiguous
 where a bare ⇧ combo would shadow typing.

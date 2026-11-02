@@ -72864,54 +72864,54 @@
         }
       }
     },
-    "Modifier-only hotkeys need Accessibility access. Click to grant it." : {
+    "Modifier-only hotkeys need Input Monitoring as well as Accessibility. Click to open it." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kurzbefehle nur mit Sondertasten benötigen Zugriff auf die Bedienungshilfen. Klicke, um ihn zu erlauben."
+            "value" : "Kurzbefehle nur mit Sondertasten benötigen neben den Bedienungshilfen auch die Eingabeüberwachung. Klicke, um sie zu öffnen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Los atajos de solo tecla modificadora necesitan acceso de Accesibilidad. Haz clic para concederlo."
+            "value" : "Los atajos de solo tecla modificadora necesitan Monitorización de entrada además de Accesibilidad. Haz clic para abrirla."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les raccourcis composés uniquement de touches de modification nécessitent l’accès à l’accessibilité. Cliquez pour l’autoriser."
+            "value" : "Les raccourcis composés uniquement de touches de modification nécessitent la surveillance de la saisie en plus de l’accessibilité. Cliquez pour l’ouvrir."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "修飾キーのみのホットキーには、アクセシビリティのアクセスが必要です。クリックして許可してください。"
+            "value" : "修飾キーのみのホットキーには、アクセシビリティに加えて入力監視が必要です。クリックして開いてください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "보조 키만 사용하는 단축키에는 손쉬운 사용 접근 권한이 필요합니다. 클릭하여 허용하십시오."
+            "value" : "보조 키만 사용하는 단축키에는 손쉬운 사용과 함께 입력 모니터링이 필요합니다. 클릭하여 엽니다."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Atalhos somente com tecla modificadora precisam de acesso de Acessibilidade. Clique para concedê-lo."
+            "value" : "Atalhos somente com tecla modificadora precisam de Monitoramento de Entrada além de Acessibilidade. Clique para abri-lo."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Для сочетаний только из клавиш-модификаторов нужен универсальный доступ. Нажмите, чтобы предоставить его."
+            "value" : "Для сочетаний только из клавиш-модификаторов нужен мониторинг ввода вместе с универсальным доступом. Нажмите, чтобы открыть его."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "仅含修饰键的快捷键需要辅助功能访问权限。点按以授予。"
+            "value" : "仅含修饰键的快捷键除辅助功能外还需要输入监控。点按以打开。"
           }
         }
       }
@@ -84754,54 +84754,54 @@
         }
       }
     },
-    "Open Accessibility settings" : {
+    "Open Input Monitoring settings" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Einstellungen für Bedienungshilfen öffnen"
+            "value" : "Einstellungen für Eingabeüberwachung öffnen"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abrir ajustes de Accesibilidad"
+            "value" : "Abrir ajustes de Monitorización de entrada"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvrir les réglages d’accessibilité"
+            "value" : "Ouvrir les réglages de surveillance de la saisie"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アクセシビリティ設定を開く"
+            "value" : "入力監視設定を開く"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "손쉬운 사용 설정 열기"
+            "value" : "입력 모니터링 설정 열기"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abrir ajustes de Acessibilidade"
+            "value" : "Abrir ajustes de Monitoramento de Entrada"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Открыть настройки универсального доступа"
+            "value" : "Открыть настройки мониторинга ввода"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打开辅助功能设置"
+            "value" : "打开输入监控设置"
           }
         }
       }

@@ -415,6 +415,7 @@ run hotkey-test            Tinycast/Features/HotKeys/Model/DoubleTapModifier.swi
                            Tinycast/Features/WindowManagement/Model/WindowCommand.swift \
                            Tinycast/Features/Snippets/Model/Snippet.swift \
                            Tinycast/Platform/LocalizedResource.swift
+run modifier-tap-grant-test Tinycast/Features/HotKeys/Model/ModifierTapGrant.swift
 run callout-test          Tinycast/Platform/Appearance.swift \
                            Tinycast/DesignSystem/Theme.swift \
                            Tinycast/DesignSystem/InterfaceMetrics.swift \

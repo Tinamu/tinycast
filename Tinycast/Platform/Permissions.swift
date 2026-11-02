@@ -25,6 +25,17 @@ enum Permissions {
         NSWorkspace.shared.open(url)
     }
 
+    /// Event taps are gated here, not by the Accessibility pane, and this one never prompts.
+    @MainActor
+    static func openInputMonitoringSettings() {
+        guard
+            let url = URL(
+                string:
+                    "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent")
+        else { return }
+        NSWorkspace.shared.open(url)
+    }
+
     /// Full Disk Access has no prompt and no API; opening a file it guards is the only probe.
     static func hasFullDiskAccess() -> Bool {
         let home = FileManager.default.homeDirectoryForCurrentUser.path

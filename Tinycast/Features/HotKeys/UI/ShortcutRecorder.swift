@@ -64,16 +64,16 @@ struct ShortcutRecorder: View {
     private func boundLabel(_ binding: HotKeyBinding) -> some View {
         HStack(spacing: Theme.Spacing.xs) {
             // A modifier-only binding is dead without the grant, so say so where the binding is.
-            if binding.usesModifierTapMonitor, modifierTapMonitor.needsAccessibility {
+            if binding.usesModifierTapMonitor, modifierTapMonitor.needsPermission {
                 Button {
-                    Permissions.openAccessibilitySettings()
+                    Permissions.openInputMonitoringSettings()
                 } label: {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundStyle(.orange)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Open Accessibility settings")
-                .help("Modifier-only hotkeys need Accessibility access. Click to grant it.")
+                .accessibilityLabel("Open Input Monitoring settings")
+                .help("Modifier-only hotkeys need Input Monitoring as well as Accessibility. Click to open it.")
             }
             HStack(spacing: Theme.Spacing.xs) {
                 ForEach(Array(binding.recorderKeycaps.enumerated()), id: \.offset) { _, cap in
