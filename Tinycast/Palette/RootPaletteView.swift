@@ -215,7 +215,8 @@ struct RootPaletteView: View {
                     title: String(localized: "Changelog"),
                     systemImage: "clock.arrow.trianglehead.2.counterclockwise.rotate.90"
                 ) {
-                    if let url = URL(string: "https://github.com/abue-ammar/tinycast/releases") {
+                    let releases = "https://github.com/\(ReleaseFeed.repository)/releases"
+                    if let url = URL(string: releases) {
                         openURL(url)
                     }
                 },
