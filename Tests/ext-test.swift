@@ -703,6 +703,31 @@ struct ExtensionTests {
         let byKeyword = ExtensionScreen(tree: tree(listJSON), query: "red")
         check("keyword match", byKeyword.items.map { $0.node.string("title") } == ["Cherry"])
 
+        // Raycast searches title and keywords, and a gapped hit has to start each of its pieces.
+        let hostsJSON = """
+            {"id":2,"type":"List","props":{"filtering":true},"children":[
+              {"id":3,"type":"List.Item","props":{"title":"SW/Amazon - WP",
+                "subtitle":"ubuntu@10.0.0.1 SSH Key: ~/.ssh/amazon-wp.pem"},"children":[]},
+              {"id":4,"type":"List.Item","props":{"title":"SW/Amazon - SW/PROD",
+                "subtitle":"ubuntu@10.0.0.2 SSH Key: ~/.ssh/amazon-wp.pem"},"children":[]},
+              {"id":5,"type":"List.Item","props":{"title":"WordPress"},"children":[]}]}
+            """
+        let hosts = ExtensionScreen(tree: tree(hostsJSON), query: "WP")
+        check(
+            "a subtitle is never searched, and a gapped hit must start its pieces",
+            hosts.items.map { $0.node.string("title") } == ["SW/Amazon - WP", "WordPress"],
+            String(describing: hosts.items.map { $0.node.string("title") }))
+        let acronym = ExtensionScreen(tree: tree(hostsJSON), query: "amazon wp")
+        check(
+            "a word-start subsequence still matches",
+            acronym.items.map { $0.node.string("title") } == ["SW/Amazon - WP"],
+            String(describing: acronym.items.map { $0.node.string("title") }))
+        let midWord = ExtensionScreen(tree: tree(hostsJSON), query: "ordpres")
+        check(
+            "a substring inside a word still matches",
+            midWord.items.map { $0.node.string("title") } == ["WordPress"],
+            String(describing: midWord.items.map { $0.node.string("title") }))
+
         // A command that owns the search text must not be filtered behind its back.
         let controlled = ExtensionScreen(
             tree: tree(

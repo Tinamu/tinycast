@@ -747,7 +747,10 @@ run slow ext-test          -parse-as-library \
                            $E/UI/ExtensionAnimatedImage.swift \
                            $E/UI/ExtensionImage.swift \
                            $E/UI/ExtensionScreen.swift \
+                           $E/Model/ExtensionRowFilter.swift \
                            $L/SearchRelevance.swift \
+                           $L/ScriptRomanization.swift \
+                           $L/LauncherMatch.swift \
                            Tinycast/Platform/Compression/Zlib.swift \
                            Tinycast/Features/Clipboard/Model/ColorValue.swift \
                            Tinycast/Features/Clipboard/Model/ColorSpaces.swift

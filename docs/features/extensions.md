@@ -233,10 +233,13 @@ the palette relies on maps 1:1 onto visible rows — the same invariant the laun
 screens hold (see [palette.md](palette.md)).
 
 - **List / Grid** — sections and items flattened in render order. When `filtering` is on (Raycast's
-  default unless the command supplies `onSearchTextChange`) rows are filtered with the launcher's own
-  `FuzzyMatch` over title, subtitle and keywords, and a section whose items all drop loses its header
-  too. `isShowingDetail` splits the screen into rows plus a detail pane and drops each row's
-  subtitle, but **not its accessories**: the API only advises an extension against sending them in
+  default unless the command supplies `onSearchTextChange`) rows are filtered by `ExtensionRowFilter`
+  over **title and keywords only** — as in Raycast a subtitle is drawn but never searched, or every
+  `~/.ssh/amazon-wp.pem` subtitle would answer `wp`. A contiguous hit counts wherever it lands; a
+  gapped one has to start each of its pieces at a word, which is `LauncherMatch` scoring above two
+  points a letter, so `wp` reaches `WordPress` and `SW/Amazon - WP` but not `SW/Amazon - SW/PROD`.
+  A section whose items all drop loses its header too. `isShowingDetail` splits the screen into rows
+  plus a detail pane and drops each row's subtitle, but **not its accessories**: the API only advises an extension against sending them in
   this mode, and Raycast draws the ones it is sent, so suppressing them here would lose a row its
   whole signal. As in Raycast, they keep their full width and the title is what truncates.
   `ExtensionScreen.Item`
@@ -417,9 +420,10 @@ screens hold (see [palette.md](palette.md)).
 - **Feedback** — `showToast` replaces the current toast, a glass pill that takes the footer menu button's place and is
   lit by its style's colour. Hovering turns its mark into an ×, and clicking anywhere but its button dismisses it and
   gives the menu button back. A failure toast's button is always **Copy** (title and message); any other style shows
-  the command's primary action; `showHUD` is a centred pill, and `confirmAlert`
-  goes through `DialogController` like every other question the app asks. Its dialog sits at
-  `.dialog`, above the palette's `.palette`, so a view command keeps its screen behind it — and
+  the command's primary action; `showHUD` is a centred pill and closes the palette first, because a
+  HUD takes the main window's place in Raycast — which is what hands the screen to the app a command
+  just opened. `confirmAlert` goes through `DialogController` like every other question the app asks.
+  Its dialog sits at `.dialog`, above the palette's `.palette`, so a view command keeps its screen behind it — and
   the palette does not dismiss while it is up (`AppCore.isShowingDialog`), because dismissing pops to
   root, which would tear the command down before its `await confirmAlert(…)` ever returns.
 - **Command arguments** — a command declaring `arguments` shows inline fields sized to their

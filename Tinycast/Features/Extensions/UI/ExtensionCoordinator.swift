@@ -290,8 +290,9 @@ final class ExtensionCoordinator {
         palette.selection = min(max(search.selection, 0), max(count - 1, 0))
     }
 
-    /// Its own window: a no-view command closes the palette before the pill is done.
+    /// A HUD takes the window's place in Raycast, so a view command's screen leaves with it.
     func showHUD(_ message: String) {
+        if paletteCoordinator.isVisible { closeMainWindow() }
         core.showMessage(message)
     }
 

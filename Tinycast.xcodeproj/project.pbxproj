@@ -261,6 +261,7 @@
 		4C960C8F11556B3FC4EFF98F /* SupportWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44875ABECB1F1B648EC90F4 /* SupportWindowView.swift */; };
 		4C97131E81CE840437281869 /* RoomStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741FA289335C5264BCBBE17C /* RoomStore.swift */; };
 		4CDAC0ED2FFFD65030E39A33 /* FileIndexSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE19D3AA2CC13A249DF4C92 /* FileIndexSnapshot.swift */; };
+		4CE43113B1E6D377FFE05374 /* ExtensionRowFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8485566885F49B6AAFE54496 /* ExtensionRowFilter.swift */; };
 		4D2062D5943C8BA2D26C61F3 /* MarkdownMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405FA57AB432D93972635CCD /* MarkdownMath.swift */; };
 		4D3E47D6F382933EB3B1AB2F /* ExtensionCleanup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F282D4BBC2F147D3A98FFB /* ExtensionCleanup.swift */; };
 		4D462D0F116A5C04E4DEFCCF /* PseudoTerminal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6A905C247E0A5C349125EA /* PseudoTerminal.swift */; };
@@ -1350,6 +1351,7 @@
 		83C54F3A609CD1C2CDF304FB /* DoubleTapDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleTapDetector.swift; sourceTree = "<group>"; };
 		83CD7B0E866AEF486F9EC5E9 /* QuicklinkCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuicklinkCoordinator.swift; sourceTree = "<group>"; };
 		847C792F7F5F31259EB56ACC /* FileSearchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchScreen.swift; sourceTree = "<group>"; };
+		8485566885F49B6AAFE54496 /* ExtensionRowFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionRowFilter.swift; sourceTree = "<group>"; };
 		848E14DE51403235A82BC287 /* AIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIProvider.swift; sourceTree = "<group>"; };
 		84D93A74803104966F150620 /* FormTextArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormTextArea.swift; sourceTree = "<group>"; };
 		856F65245B10433A230194E6 /* QuicklinkListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuicklinkListView.swift; sourceTree = "<group>"; };
@@ -2423,6 +2425,7 @@
 				CBD80BC6110C36450C2FF751 /* ExtensionPickerItem.swift */,
 				5133D376B62B69B9C8F03590 /* ExtensionRefreshPolicy.swift */,
 				582A70CF432F5E0144E57369 /* ExtensionRefreshState.swift */,
+				8485566885F49B6AAFE54496 /* ExtensionRowFilter.swift */,
 				4FBBC69BC9727C5E3FE77120 /* ExtensionSearchAccessory.swift */,
 				A5C67CBB0BD596D3E74326D2 /* ExtensionSearchState.swift */,
 				7732FB0ED92C8FBFE22599CE /* ExtensionStoreResponse.swift */,
@@ -4352,6 +4355,7 @@
 				D3C7265B00695CE274ED5A23 /* ExtensionRefreshIndicator.swift in Sources */,
 				45C35CBBED43903124081D00 /* ExtensionRefreshPolicy.swift in Sources */,
 				FDF43BE032A1CBFE76526E6F /* ExtensionRefreshState.swift in Sources */,
+				4CE43113B1E6D377FFE05374 /* ExtensionRowFilter.swift in Sources */,
 				50A3CB2A348F8E03D467B169 /* ExtensionRuntime.swift in Sources */,
 				F51785CF5A6EC0B87D6802C9 /* ExtensionScreen.swift in Sources */,
 				CF59A1D1C7FE76558B638460 /* ExtensionSearchAccessory.swift in Sources */,

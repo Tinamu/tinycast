@@ -119,8 +119,7 @@ struct ExtensionScreen: Equatable {
             let sectionType = root.type == "Grid" ? "Grid.Section" : "List.Section"
             let emptyType = root.type == "Grid" ? "Grid.EmptyView" : "List.EmptyView"
             emptyView = root.children.first { $0.type == emptyType }
-            let needle = FuzzyMatch.Query(
-                filtersLocally ? query.trimmingCharacters(in: .whitespaces) : "")
+            let filter = ExtensionRowFilter(filtersLocally ? query : "")
             var rows: [Row] = []
             var items: [Item] = []
             // Numbering as rows are built keeps `selection` and the drawn order in step.
@@ -133,14 +132,14 @@ struct ExtensionScreen: Equatable {
                 if child.type == sectionType {
                     let matching = child.children
                         .filter { $0.type == itemType }
-                        .filter { ExtensionScreen.matches($0, needle) }
+                        .filter { ExtensionScreen.matches($0, filter) }
                     guard !matching.isEmpty else { continue }
                     rows.append(
                         .header(
                             title: child.string("title") ?? "",
                             subtitle: child.string("subtitle"), id: String(child.id)))
                     matching.forEach(append)
-                } else if child.type == itemType, ExtensionScreen.matches(child, needle) {
+                } else if child.type == itemType, ExtensionScreen.matches(child, filter) {
                     append(child)
                 }
             }
@@ -204,13 +203,11 @@ struct ExtensionScreen: Equatable {
         return SelectionChange(handler: selectionHandler, itemID: itemID)
     }
 
-    /// Title, subtitle and keywords, ranked by the launcher's matcher.
-    static func matches(_ item: RenderNode, _ needle: FuzzyMatch.Query) -> Bool {
-        guard !needle.isEmpty else { return true }
-        var haystack = [item.string("title") ?? ""]
-        if let subtitle = item.string("subtitle") { haystack.append(subtitle) }
-        haystack.append(contentsOf: item.array("keywords").compactMap(\.stringValue))
-        return haystack.contains { FuzzyMatch.score(needle, candidate: $0) != nil }
+    /// Title and keywords, as Raycast searches them — a subtitle is drawn but never matched.
+    static func matches(_ item: RenderNode, _ filter: ExtensionRowFilter) -> Bool {
+        guard !filter.isEmpty else { return true }
+        if filter.matches(item.string("title") ?? "") { return true }
+        return item.array("keywords").compactMap(\.stringValue).contains { filter.matches($0) }
     }
 
     /// The `ActionPanel` that applies to the current selection: the item's own, else the screen's.
